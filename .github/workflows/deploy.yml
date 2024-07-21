@@ -22,9 +22,15 @@ jobs:
       - name: Log in to Yandex Container Registry
         run: docker login --username oauth --password "${{ secrets.YANDEX_CLOUD_TOKEN }}" cr.yandex
 
-      - name: Pull Docker image
-        run: |
-          docker pull cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Production Server
-        run: docker run -p 80:3000 cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no varnikova@51.250.34.228 << 'EOF'
+            docker pull cr.yandex/crpiaftpish65qrcr3tg/app:1.0.0_latest
+            docker stop $(docker ps -q --filter ancestor=cr.yandex/crpiaftpish65qrcr3tg/app)
+            docker run -d -p 80:3000 cr.yandex/crpiaftpish65qrcr3tg/app:1.0.0_latest
+          EOF
