@@ -12,25 +12,27 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '18'
       - run: npm ci
       - run: npm run lint
       - run: npm test
       - name: Build Docker image
-        run: docker build -t cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} .
+        run: |
+             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} .
+             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest .
       - name: Push Docker image
         run: |
-          echo ${{ secrets.YANDEX_CLOUD_TOKEN }} | docker login -u json_key --password-stdin cr.yandex
-          docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}
-          docker tag cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
-          docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
+          docker login --username oauth --password "${{ secrets.YANDEX_CLOUD_TOKEN }}" cr.yandex
+          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}
+          docker tag cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
+          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
       - name: Create Release Issue
         uses: actions-ecosystem/action-create-issue@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           title: Release ${{ github.run_number }}
           body: |
             Release date: ${{ github.event.date }}
             Author: ${{ github.actor }}
             Version: ${{ github.run_number }}
-            Docker image: cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}
+            Docker image: cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}

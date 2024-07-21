@@ -1,3 +1,16 @@
+# How to run project
+in terminal
+
+npm install
+npm run build:docker
+npm run start:docker
+
+should start listening at http://localhost:3000/hw/store
+
+in web 
+IP 51.250.34.228
+
+------------------------
 # Домашнее задание ШРИ: Инфраструктура
 
 Вам уже знакомо это приложение, вы работали с ним во время выполнения [домашнего задания по автотестам](https://github.com/dima117/testing-homework).
