@@ -17,7 +17,8 @@ jobs:
       - run: npm run lint
       - run: npm test
       - name: Build Docker image
-        run: docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} .
+        run: |
+             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} .
              docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest .
       - name: Push Docker image
         run: |
