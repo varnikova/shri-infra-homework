@@ -18,14 +18,14 @@ jobs:
       - run: npm test
       - name: Build Docker image
         run: |
-             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} .
-             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest .
+             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }} .
+             docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest .
       - name: Push Docker image
         run: |
           docker login --username oauth --password "${{ secrets.YANDEX_CLOUD_TOKEN }}" cr.yandex
-          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}
-          docker tag cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
-          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
+          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}
+          docker tag cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }} cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
+          docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
       - name: Create Release Issue
         uses: actions-ecosystem/action-create-issue@v1
         with:
