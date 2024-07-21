@@ -20,7 +20,7 @@ jobs:
         run: docker build -t cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} .
       - name: Push Docker image
         run: |
-          run: echo "${{ secrets.YANDEX_CR_PASSWORD }}" | docker login -u "${{ secrets.YANDEX_CR_LOGIN }}" --password-stdin cr.yandex
+          run: echo "${{ secrets.YANDEX_REGISTRY_PASSWORD }}" | docker login -u "${{ secrets.YANDEX_REGISTRY_USERNAME }}" --password-stdin cr.yandex
           docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}
           docker tag cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }} cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
           docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}_latest
