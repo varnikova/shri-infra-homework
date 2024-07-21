@@ -27,6 +27,4 @@ jobs:
           docker pull cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
 
       - name: Deploy to Production Server
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} varnikova@51.250.34.228 \
-            "docker run -d -p 3000:3000 cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest"
+        run: docker run cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
