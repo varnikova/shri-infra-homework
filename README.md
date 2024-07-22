@@ -1,4 +1,4 @@
-connect me t.me/dariavarenka 
+connect me t.me/dariavarenka
 
 # How to run project
 in terminal
@@ -9,7 +9,8 @@ npm run start:docker
 
 should start listening at http://localhost:3000/hw/store
 
-in browser
+
+in web
 51.250.34.228/hw/store/
 
 ------------------------
