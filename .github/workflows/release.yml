@@ -31,65 +31,13 @@ jobs:
           docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}
           docker tag cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }} cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
           docker push cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}_latest
-      - name: Create release branch
-        run: |
-          git checkout -b releases/${{ github.event.inputs.version }}
-          git push origin releases/${{ github.event.inputs.version }}
-
-      - name: Get latest release tag
-        id: latest-release
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0)
-          echo "::set-output name=tag::$latest_tag"
-
-      - name: Get commits from previous tag
-        id: commits
-        run: |
-          commits=$(git log ${GITHUB_SHA}...${{ steps.latest-release.outputs.tag }} --oneline)
-          echo "::set-output name=commits::$commits"
-      - name: Update CHANGELOG.md
-        run: |
-          # Define variables
-          new_version="v${{ github.event.inputs.version }}"
-          changelog_file="CHANGELOG.md"
-          date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          commits=${{ steps.commits.outputs.commits }}
-          
-          # Backup current changelog
-          cp $changelog_file ${changelog_file}.bak
-          
-          # Write new changelog
-          echo -e "## ${new_version} (${date})\n\n${commits}\n" > $changelog_file
-          cat ${changelog_file}.bak >> $changelog_file
-          
-          # Add and commit changes
-          git config user.name 'GitHub Actions'
-          git config user.email 'actions@github.com'
-          git add $changelog_file
-          git commit -m "Update CHANGELOG.md for ${new_version}"
-          git push origin releases/${{ github.event.inputs.version }}
-      - name: Create release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ github.event.inputs.version }}
-          release_name: Release ${{ github.event.inputs.version }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release Issue
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          title: Release ${{ github.event.inputs.version }}
+          title: Release ${{ github.run_number }}
           body: |
-            Release date: ${{ steps.current-time.outputs.date }}
+            Release date: ${{ github.event.date }}
             Author: ${{ github.actor }}
-            Version: ${{ github.event.inputs.version }}
-            Commits:
-            ${{ steps.commits.outputs.commits }}
-            Docker image: cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.event.inputs.version }}
-
-      - name: Get current time
-        id: current-time
-        run: echo "::set-output name=date::$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            Version: ${{ github.run_number }}
+            Docker image: cr.yandex/crpiaftpish65qrcr3tg/app:${{ github.run_number }}
